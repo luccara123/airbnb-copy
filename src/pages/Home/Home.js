@@ -25,9 +25,7 @@ class Home extends Component{
         if(this.state.cities.length === 0){
             return (<Spinner />)
         }  
-
-        const recCities = <Cities cities={this.state.cities} />
-        
+ 
         
     
         return(
@@ -38,7 +36,11 @@ class Home extends Component{
                        <SearchBox />
                     </div>
                 </div>
-                {recCities}
+                <div className='col s12'>
+                    <Cities cities={this.state.cities} />
+                </div>
+             
+        
             </div>
 
         </div>
