@@ -5,6 +5,8 @@ import Spinner from '../../utility/Spinner/Spinner';
 import axios from 'axios';
 import Cities from '../../utility/City/Cities';
 import Activities from '../../utility/Activity/Activities';
+import Venues from '../../utility/Venue/Venues';
+
 
 
 class Home extends Component{
@@ -15,6 +17,7 @@ class Home extends Component{
         asiaCities: {},
         exoticCities: {},
         activities: [],
+        recVenues: {}
         
     }
 
@@ -51,11 +54,17 @@ class Home extends Component{
             activities:  activities.data,
         })
 
+        const recVenuesUrl = `${window.apiHost}/venues/recommended`;
+        const venues = await axios(recVenuesUrl);
+        this.setState({
+            recVenues: venues.data,
+        })
+
     }
 
     render(){
-        console.log(this.state.activities);
-        if((this.state.cities.length === 0)){
+        console.log(this.state.activities) ;
+        if((this.state.cities.length === 0)  || (!this.state.recVenues.venues)){
             return(<Spinner />)
         }
 
@@ -79,14 +88,14 @@ class Home extends Component{
                         <Activities activities={this.state.activities} header='Today in your area'/>
                     </div>
 
-                    
-        
                     <div className="col s12">
                         <Cities cities={this.state.europeCities.cities} header={this.state.europeCities.header} />
                     </div>
 
-                   
-
+                    <div className="col s12">
+                        <Venues venues={this.state.recVenues.venues} header={this.state.recVenues.header} />
+                    </div>
+                    
                     <div className="col s12">
                         <Cities cities={this.state.asiaCities.cities} header={this.state.asiaCities.header} />
                     </div>
