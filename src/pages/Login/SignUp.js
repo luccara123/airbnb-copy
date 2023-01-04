@@ -3,7 +3,10 @@ import './Login.css';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import openModal from '../../actions/openModal';
+import regAction from '../../actions/regAction'
 import Login from './Login';
+import axios from 'axios';
+import swal from 'sweetalert';
 
 class SignUp extends Component{
 
@@ -23,11 +26,48 @@ class SignUp extends Component{
     changeEmail = (e)=>this.setState({email:e.target.value})
     changePassword = (e)=>this.setState({password:e.target.value})
 
-    submitLogin = (e)=>{
+    submitLogin = async (e)=>{
         e.preventDefault();
-        console.log(this.state.email);
-        console.log(this.state.password);
+       // console.log(this.state.email);
+       // console.log(this.state.password);
+       const url = `${window.apiHost}/users/signup`
+       const data = {
+        email: this.state.password,
+        password: this.state.password
+       }
+
+       const resp = await axios.post(url, data);
+       console.log(resp.data);
+       const token = resp.data.token;
+
+        // -- noEmail
+     if(resp.data.msg === "userExists"){
+        swal({
+            title: "That email is already registered.",
+            text: "The email provided is already registered. Please try another.",
+            icon: "error",
+          })
+    } else if(resp.data.msg === "invalidData"){
+        swal({
+            title: "Invalid email/password",
+            text: "Please provide a valid email and password.",
+            icon: "error",
+          })
+    } else if(resp.data.msg === "userAdded"){
+        swal({
+            title: "Success",
+            icon: "success",
+        });
+        this.props.regAction(resp.data);
+        // We call our register action to update our auth reducer!!
     }
+
+      // const url2 = `${window.apiHost}/users/token-check`;
+      // const resp2 = await axios.post(url2, {token});
+      // console.log(resp2);
+    }
+
+    
 
     render(){
         return(
@@ -41,7 +81,7 @@ class SignUp extends Component{
                     </div>
                     {this.state.lowerPartOfForm}
                     <div className="divider"></div>
-                    <div>Already have an account? <span onClick={()=>{this.props.openModal('open', <Login />)}}>Login</span></div>
+                    <div>Already have an account? <span className='pointer' onClick={()=>{this.props.openModal('open', <Login />)}}>Login</span></div>
                 </form>
             </div>
 
@@ -50,16 +90,21 @@ class SignUp extends Component{
 
 }
 
-
+function mapStateToProps(state){
+    return{
+        auth: state.auth,
+    }
+}
 
 
 function mapDispatchToProps(dispatcher){
     return bindActionCreators({
-        openModal: openModal
+        openModal: openModal,
+        regAction: regAction,
     }, dispatcher )
 }
 
-export default connect(null, mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 
 const SignUpInputFields = (props) =>{
     return(
