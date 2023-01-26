@@ -5,6 +5,8 @@ import Home from './pages/Home/Home'
 import SingleFullVenue from './pages/SingleFullVenue/SingleFullVenue';
 import Modal from './utility/Modal/Modal';
 import cityVenues from './pages/CityVenus/CityVenues'
+import PaymentSuccess from './pages/PaymentSuccess.js/PaymentSuccess';
+import Account from './pages/Account/Account'
 
 class App extends Component{
 
@@ -16,6 +18,8 @@ class App extends Component{
           <Route exact path="/venue/:vid" component={SingleFullVenue} />
           <Route exact path="/venue/:cityName" component={cityVenues} />
           <Route path="/" component={Modal} />
+          <Route exact path="/payment-success/:stripeToken" component={PaymentSuccess} />
+          <Route path="/account" component={ Account } />
       </Router>
     )
   }
